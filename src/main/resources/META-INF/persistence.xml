@@ -8,6 +8,7 @@
         <jta-data-source>java:jboss/datasources/PostgresDS</jta-data-source>
         <class>main.islab1back.entity.User</class>
         <class>main.islab1back.entity.SessionUser</class>
+        <class>main.islab1back.entity.ApplicationAdmin</class>
         <properties>
             <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
             <property name="eclipselink.ddl-generation" value="create-tables"/>
