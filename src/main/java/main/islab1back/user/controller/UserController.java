@@ -1,17 +1,19 @@
-package main.islab1back;
-
+package main.islab1back.user.controller;
 
 import jakarta.ejb.Schedule;
 import jakarta.ejb.Singleton;
-import jakarta.persistence.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.Persistence;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
 import main.islab1back.dto.AnswerApplication;
-import main.islab1back.entity.ApplicationAdmin;
-import main.islab1back.entity.SessionUser;
-import main.islab1back.entity.User;
+import main.islab1back.user.model.ApplicationAdmin;
+import main.islab1back.user.model.SessionUser;
+import main.islab1back.user.model.User;
 import main.islab1back.utils.PasswordHasher;
 
 import java.time.LocalDateTime;
@@ -19,8 +21,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Singleton
-@Path("/controller")
-public class Controller {
+@Path("/user")
+public class UserController {
     private final EntityManager em = Persistence.createEntityManagerFactory("myDb").createEntityManager();
     private final EntityTransaction transaction = em.getTransaction();
 
@@ -34,13 +36,6 @@ public class Controller {
             em.remove(session);
         }
     }
-
-    @POST
-    @Path("/addFlat")
-    public void addFlat() {
-
-    }
-
     @POST
     @Path("/registration")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -110,8 +105,7 @@ public class Controller {
                     .setParameter("sessionId", sessionId)
                     .setParameter("now", LocalDateTime.now())
                     .getSingleResult();
-
-            return Response.ok(true).build();
+            return Response.ok(session.getUser().getLogin()).build();
         } catch (NoResultException e) {
             return Response.status(Response.Status.UNAUTHORIZED).entity(false).build();
         }
@@ -191,6 +185,5 @@ public class Controller {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Ошибка при одобрении заявки").build();
         }
     }
-
 
 }

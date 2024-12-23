@@ -1,4 +1,4 @@
-package main.islab1back.flatsDescription;
+package main.islab1back.flats.model;
 
 public enum Transport {
     FEW,

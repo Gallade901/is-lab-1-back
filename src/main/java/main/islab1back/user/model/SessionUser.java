@@ -1,4 +1,4 @@
-package main.islab1back.entity;
+package main.islab1back.user.model;
 
 
 import jakarta.persistence.*;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@Table(name = "sessions")
+@Table(name = "sessions_user")
 public class SessionUser {
 
     public SessionUser() {

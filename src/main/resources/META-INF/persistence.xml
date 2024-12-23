@@ -5,17 +5,20 @@
              version="3.0">
     <persistence-unit name="myDb" transaction-type="JTA">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-        <jta-data-source>java:jboss/datasources/PostgresDS</jta-data-source>
-        <class>main.islab1back.entity.User</class>
-        <class>main.islab1back.entity.SessionUser</class>
-        <class>main.islab1back.entity.ApplicationAdmin</class>
+        <jta-data-source>java:jboss/datasources/PostgresDS2</jta-data-source> <!-- просто DS -->
+        <class>main.islab1back.user.model.User</class>
+        <class>main.islab1back.user.model.SessionUser</class>
+        <class>main.islab1back.user.model.ApplicationAdmin</class>
+        <class>main.islab1back.house.model.House</class>
+        <class>main.islab1back.coordinates.model.Coordinates</class>
+        <class>main.islab1back.flats.model.Flat</class>
         <properties>
             <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
             <property name="eclipselink.ddl-generation" value="create-tables"/>
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/studs"/>
-            <property name="jakarta.persistence.jdbc.user" value="s367617"/>
-            <property name="jakarta.persistence.jdbc.password" value="PUczqX7P9B8Jm0af"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/postgres"/> <!-- /studs -->
+            <property name="jakarta.persistence.jdbc.user" value="postgres"/> <!-- s367617 -->
+            <property name="jakarta.persistence.jdbc.password" value="admin"/> <!-- PUczqX7P9B8Jm0af-->
         </properties>
     </persistence-unit>
 </persistence>
