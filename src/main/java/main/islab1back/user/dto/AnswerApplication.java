@@ -1,4 +1,4 @@
-package main.islab1back.dto;
+package main.islab1back.user.dto;
 
 
 import lombok.Getter;

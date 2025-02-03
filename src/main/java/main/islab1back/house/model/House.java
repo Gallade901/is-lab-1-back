@@ -18,7 +18,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class House {
-    public House (String name, int year, int numberOfFloors, User user) {
+    public House (String name, Integer year, Integer numberOfFloors, User user) {
         this.name = name;
         this.year = year;
         this.numberOfFloors = numberOfFloors;
@@ -28,18 +28,17 @@ public class House {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotNull
     private String name;
 
     @NotNull
     @Max(681)
     @Min(0)
-    private int year;
+    private Integer year;
 
     @NotNull
     @Max(80)
     @Min(1)
-    private int numberOfFloors;
+    private Integer numberOfFloors;
 
     @NotNull
     @ManyToOne

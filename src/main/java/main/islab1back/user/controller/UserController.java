@@ -10,14 +10,16 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
-import main.islab1back.dto.AnswerApplication;
+import main.islab1back.user.dto.AnswerApplication;
 import main.islab1back.user.model.ApplicationAdmin;
 import main.islab1back.user.model.SessionUser;
 import main.islab1back.user.model.User;
 import main.islab1back.utils.PasswordHasher;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Singleton
@@ -63,6 +65,7 @@ public class UserController {
         }
         String hashedPassword = PasswordHasher.hashPassword(user.getPassword());
         user.setPassword(hashedPassword);
+        System.out.println(hashedPassword);
         em.persist(user);
         transaction.commit();
         return "Регистрация прошла успешно";
@@ -105,7 +108,10 @@ public class UserController {
                     .setParameter("sessionId", sessionId)
                     .setParameter("now", LocalDateTime.now())
                     .getSingleResult();
-            return Response.ok(session.getUser().getLogin()).build();
+            Map<String, Object> userData = new HashMap<>();
+            userData.put("login", session.getUser().getLogin());
+            userData.put("role", session.getUser().getRole());
+            return Response.ok(userData).build();
         } catch (NoResultException e) {
             return Response.status(Response.Status.UNAUTHORIZED).entity(false).build();
         }

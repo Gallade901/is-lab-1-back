@@ -1,24 +1,29 @@
 package main.islab1back.flats.dto;
 
-import jakarta.persistence.*;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.groups.Default;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import main.islab1back.flats.model.Furnish;
 import main.islab1back.flats.model.Transport;
 import main.islab1back.flats.model.View;
 
+import java.time.LocalDate;
 
 @Getter
 @Setter
-public class FlatDtoRequest {
+@AllArgsConstructor
+@NoArgsConstructor
+public class FlatDtoResponse {
+    @NotNull
+    private int id;
     @NotNull
     private String name;
-
-    private Integer coordinatesId;
 
     @NotNull
     private int coordinateX;
@@ -27,13 +32,17 @@ public class FlatDtoRequest {
     @Max(965)
     private long coordinateY;
 
-    private Integer houseId;
-
+    @NotNull
     private String houseName;
 
-
+    @NotNull
+    @Max(681)
+    @Min(0)
     private Integer houseYear;
 
+    @NotNull
+    @Max(80)
+    @Min(1)
     private Integer houseNumberOfFloors;
 
     @NotNull
@@ -44,7 +53,10 @@ public class FlatDtoRequest {
     @NotNull
     @Max(521)
     @Min(1)
-    private double area;
+    private Double area;
+
+    @NotNull
+    private LocalDate creationDate;
 
     @NotNull
     @Max(648728965)
@@ -67,5 +79,5 @@ public class FlatDtoRequest {
     private Transport transport;
 
     @NotNull
-    private String login;
+    private String owner;
 }

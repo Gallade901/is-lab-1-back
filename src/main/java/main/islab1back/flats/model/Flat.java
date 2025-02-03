@@ -37,7 +37,7 @@ public class Flat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
 
     @NotNull
     private String name;
@@ -47,7 +47,7 @@ public class Flat {
     @JoinColumn(name = "coordinate_id", nullable = false)
     private Coordinates coordinates;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "house_id")
     private House house;
 
