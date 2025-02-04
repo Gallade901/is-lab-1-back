@@ -4,12 +4,13 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import main.islab1back.flats.model.Flat;
 import main.islab1back.user.model.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,11 +19,12 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class House {
-    public House (String name, Integer year, Integer numberOfFloors, User user) {
+    public House (String name, Integer year, Integer numberOfFloors, User user, List<Flat> flatList) {
         this.name = name;
         this.year = year;
         this.numberOfFloors = numberOfFloors;
         this.user = user;
+        this.flats = flatList;
     }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,4 +46,7 @@ public class House {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @OneToMany(mappedBy = "house", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Flat> flats;
 }

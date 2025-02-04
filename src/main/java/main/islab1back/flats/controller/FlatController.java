@@ -45,29 +45,39 @@ public class FlatController {
             Coordinates coordinates;
             House house;
             if (flatDtoRequest.getCoordinatesId().equals(0)) {
-                coordinates = new Coordinates(flatDtoRequest.getCoordinateX(), flatDtoRequest.getCoordinateY(), user);
+                List<Flat> flatList = new ArrayList<>();
+                coordinates = new Coordinates(flatDtoRequest.getCoordinateX(), flatDtoRequest.getCoordinateY(), user, flatList);
                 em.persist(coordinates);
+                em.flush();
             } else {
                 coordinates = em.find(Coordinates.class, flatDtoRequest.getCoordinatesId());
             }
+
             if (flatDtoRequest.getHouseId().equals(0)) {
                 int houseYear = flatDtoRequest.getHouseYear();
                 int houseNumberOfFloors = flatDtoRequest.getHouseNumberOfFloors();
                 if (houseYear <= 0 || houseNumberOfFloors <= 0 || houseYear > 681 || houseNumberOfFloors > 80) {
                     return Response.ok("Невалидное количество этажей или год дома").build();
                 }
-                house = new House(flatDtoRequest.getHouseName(), flatDtoRequest.getHouseYear(), flatDtoRequest.getHouseNumberOfFloors(), user);
+                List<Flat> flatList = new ArrayList<>();
+                house = new House(flatDtoRequest.getHouseName(), flatDtoRequest.getHouseYear(), flatDtoRequest.getHouseNumberOfFloors(), user, flatList);
                 em.persist(house);
+                em.flush();
             } else if (flatDtoRequest.getHouseId().equals(-1)) {
                 house = null;
-            }
-            else {
+            } else {
                 house = em.find(House.class, flatDtoRequest.getHouseId());
             }
             Flat flat = new Flat(flatDtoRequest.getName(), coordinates, house, flatDtoRequest.getArea(), flatDtoRequest.getPrice(), flatDtoRequest.getBalcony(),
                     flatDtoRequest.getTimeToMetroOnFoot(), flatDtoRequest.getNumberOfRooms(), flatDtoRequest.getFurnish(), flatDtoRequest.getView(), flatDtoRequest.getTransport(), user);
             flat.setCreationDate(LocalDate.now());
             em.persist(flat);
+            if (house != null) {
+                house.getFlats().add(flat);
+                em.merge(house);
+            }
+            coordinates.getFlats().add(flat);
+            em.merge(coordinates);
             transaction.commit();
             flatWebSocket.onMessage("");
             return Response.ok("Квартира добавлена").build();
@@ -91,7 +101,8 @@ public class FlatController {
                 Coordinates coordinates = f.getCoordinates();
                 House house;
                 if (f.getHouse() == null) {
-                    house = new House("",null,null,null);
+                    List<Flat> flatList = new ArrayList<>();
+                    house = new House("",null,null,null, flatList);
                 } else {
                     house = f.getHouse();
                 }
@@ -158,7 +169,8 @@ public class FlatController {
         Coordinates coordinates;
         House house;
         if (flatDtoRequestEdit.getCoordinatesId().equals(0)) {
-            coordinates = new Coordinates(flatDtoRequestEdit.getCoordinateX(), flatDtoRequestEdit.getCoordinateY(), user);
+            List<Flat> flatList = new ArrayList<>();
+            coordinates = new Coordinates(flatDtoRequestEdit.getCoordinateX(), flatDtoRequestEdit.getCoordinateY(), user, flatList);
             em.persist(coordinates);
         } else {
             coordinates = em.find(Coordinates.class, flatDtoRequestEdit.getCoordinatesId());
@@ -169,7 +181,8 @@ public class FlatController {
             if (houseYear <= 0 || houseNumberOfFloors <= 0 || houseYear > 681 || houseNumberOfFloors > 80) {
                 return Response.ok("Невалидное количество этажей или год дома").build();
             }
-            house = new House(flatDtoRequestEdit.getHouseName(), flatDtoRequestEdit.getHouseYear(), flatDtoRequestEdit.getHouseNumberOfFloors(), user);
+            List<Flat> flatList = new ArrayList<>();
+            house = new House(flatDtoRequestEdit.getHouseName(), flatDtoRequestEdit.getHouseYear(), flatDtoRequestEdit.getHouseNumberOfFloors(), user, flatList);
             em.persist(house);
         } else if (flatDtoRequestEdit.getHouseId().equals(-1)) {
             house = null;
@@ -194,8 +207,9 @@ public class FlatController {
         Flat f = em.find(Flat.class, id);
         Coordinates coordinates = f.getCoordinates();
         House house;
+        List<Flat> flatList = new ArrayList<>();
         if (f.getHouse() == null) {
-            house = new House("",null,null,null);
+            house = new House("",null,null,null, flatList);
         } else {
             house = f.getHouse();
         }

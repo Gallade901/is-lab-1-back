@@ -1,4 +1,4 @@
-package main.islab1back;
+package main.islab1back.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

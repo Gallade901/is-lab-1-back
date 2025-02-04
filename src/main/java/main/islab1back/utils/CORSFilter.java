@@ -1,4 +1,4 @@
-package main.islab1back;
+package main.islab1back.utils;
 
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerResponseContext;
