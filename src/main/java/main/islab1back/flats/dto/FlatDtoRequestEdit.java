@@ -1,21 +1,24 @@
 package main.islab1back.flats.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
+
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.groups.Default;
 import lombok.Getter;
 import lombok.Setter;
 import main.islab1back.flats.model.Furnish;
 import main.islab1back.flats.model.Transport;
 import main.islab1back.flats.model.View;
 
+import java.time.LocalDate;
 
 @Getter
 @Setter
-public class FlatDtoRequest {
+public class FlatDtoRequestEdit {
+    @NotNull
+    private Integer id;
     @NotNull
     private String name;
 
@@ -48,6 +51,9 @@ public class FlatDtoRequest {
     private double area;
 
     @NotNull
+    private LocalDate creationDate;
+
+    @NotNull
     @Max(648728965)
     @Min(1)
     private Double price;
@@ -68,5 +74,5 @@ public class FlatDtoRequest {
     private Transport transport;
 
     @NotNull
-    private String login;
+    private String owner;
 }
