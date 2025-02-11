@@ -28,7 +28,7 @@ public class UserController {
     private final EntityManager em = Persistence.createEntityManagerFactory("myDb").createEntityManager();
     private final EntityTransaction transaction = em.getTransaction();
 
-    @Schedule(hour = "*/2", persistent = false)
+    @Schedule(hour = "*/4", persistent = false)
     public void cleanExpiredSessions() {
         LocalDateTime now = LocalDateTime.now();
         List<SessionUser> noActiveSessions = em.createQuery("SELECT s FROM SessionUser s WHERE s.expiresAt <= :currentTime", SessionUser.class)

@@ -12,6 +12,7 @@ import main.islab1back.coordinates.dto.CoordinateDtoRequestEdit;
 import main.islab1back.coordinates.dto.CoordinatesDtoRequest;
 import main.islab1back.coordinates.dto.CoordinatesDtoResponse;
 import main.islab1back.coordinates.model.Coordinates;
+import main.islab1back.flats.controller.FlatWebSocketEndpoint;
 import main.islab1back.flats.model.Flat;
 import main.islab1back.user.model.User;
 
@@ -25,6 +26,7 @@ public class CoordinatesController {
     private final EntityManager em = Persistence.createEntityManagerFactory("myDb").createEntityManager();
     private final EntityTransaction transaction = em.getTransaction();
     CoordinateWebSocketEndpoint coordinateWebSocket = new CoordinateWebSocketEndpoint();
+    FlatWebSocketEndpoint flatWebSocketEndpoint = new FlatWebSocketEndpoint();
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -40,6 +42,7 @@ public class CoordinatesController {
             Coordinates coordinates = new Coordinates(coordinatesDto.getX(),coordinatesDto.getY(), user, flatList);
             em.persist(coordinates);
             transaction.commit();
+            coordinateWebSocket.onMessage("");
             return Response.ok("Координаты успешно добавлены").build();
         } catch (Exception e) {
             if (transaction.isActive()) {
@@ -82,6 +85,7 @@ public class CoordinatesController {
             }
             transaction.commit();
             coordinateWebSocket.onMessage("");
+            flatWebSocketEndpoint.onMessage("");
             return Response.ok().build();
 
         }  catch (Exception e) {

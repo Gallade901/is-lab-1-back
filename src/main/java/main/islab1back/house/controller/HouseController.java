@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import main.islab1back.flats.controller.FlatWebSocketEndpoint;
 import main.islab1back.flats.model.Flat;
 import main.islab1back.house.dto.HouseDtoRequest;
 import main.islab1back.house.dto.HouseDtoRequestEdit;
@@ -24,6 +25,7 @@ public class HouseController {
     private final EntityManager em = Persistence.createEntityManagerFactory("myDb").createEntityManager();
     private final EntityTransaction transaction = em.getTransaction();
     HouseWebSocketEndpoint houseWebSocket = new HouseWebSocketEndpoint();
+    FlatWebSocketEndpoint flatWebSocket = new FlatWebSocketEndpoint();
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -39,6 +41,7 @@ public class HouseController {
             House house = new House(houseDto.getName(), houseDto.getYear(), houseDto.getNumberOfFloors(), user, flatList);
             em.persist(house);
             transaction.commit();
+            houseWebSocket.onMessage("");
             return Response.ok("Дом успешно добавлен").build();
         } catch (Exception e) {
             if (transaction.isActive()) {
@@ -82,6 +85,7 @@ public class HouseController {
             }
             transaction.commit();
             houseWebSocket.onMessage("");
+            flatWebSocket.onMessage("");
             return Response.ok().build();
 
         }  catch (Exception e) {
