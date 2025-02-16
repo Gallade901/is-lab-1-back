@@ -1,7 +1,9 @@
 package main.islab1back.house.controller;
 
+import jakarta.annotation.PreDestroy;
 import jakarta.ejb.Singleton;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import jakarta.validation.Valid;
@@ -22,10 +24,18 @@ import java.util.List;
 @Singleton
 @Path("/house")
 public class HouseController {
-    private final EntityManager em = Persistence.createEntityManagerFactory("myDb").createEntityManager();
+    private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("myDb");
+    private final EntityManager em = emf.createEntityManager();
     private final EntityTransaction transaction = em.getTransaction();
     HouseWebSocketEndpoint houseWebSocket = new HouseWebSocketEndpoint();
     FlatWebSocketEndpoint flatWebSocket = new FlatWebSocketEndpoint();
+
+    @PreDestroy
+    public void close() {
+        if (emf != null && emf.isOpen()) {
+            emf.close();
+        }
+    }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)

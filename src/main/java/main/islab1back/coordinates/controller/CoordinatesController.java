@@ -1,9 +1,9 @@
 package main.islab1back.coordinates.controller;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import jakarta.ejb.Singleton;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.Persistence;
+import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -23,10 +23,18 @@ import java.util.List;
 @Singleton
 @Path("/coordinates")
 public class CoordinatesController {
-    private final EntityManager em = Persistence.createEntityManagerFactory("myDb").createEntityManager();
+    private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("myDb");
+    private final EntityManager em = emf.createEntityManager();
     private final EntityTransaction transaction = em.getTransaction();
     CoordinateWebSocketEndpoint coordinateWebSocket = new CoordinateWebSocketEndpoint();
     FlatWebSocketEndpoint flatWebSocketEndpoint = new FlatWebSocketEndpoint();
+
+    @PreDestroy
+    public void close() {
+        if (emf != null && emf.isOpen()) {
+            emf.close();
+        }
+    }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -75,7 +83,7 @@ public class CoordinatesController {
     }
     @DELETE
     @Path("/{id}")
-    public Response deleteHouse(@PathParam("id") Integer id) {
+    public Response deleteCoordinates(@PathParam("id") Integer id) {
         try {
             transaction.begin();
 
@@ -99,7 +107,7 @@ public class CoordinatesController {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateFlat(@Valid CoordinateDtoRequestEdit coordinateDtoRequest) {
+    public Response updateCoordinates(@Valid CoordinateDtoRequestEdit coordinateDtoRequest) {
         transaction.begin();
         String login = coordinateDtoRequest.getOwner();
         User user = em.createQuery("SELECT u FROM User u WHERE u.login = :login", User.class)

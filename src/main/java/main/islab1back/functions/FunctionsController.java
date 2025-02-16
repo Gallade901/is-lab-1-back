@@ -1,15 +1,14 @@
 package main.islab1back.functions;
 
+import jakarta.annotation.PreDestroy;
 import jakarta.ejb.Singleton;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import main.islab1back.flats.controller.FlatWebSocketEndpoint;
-import main.islab1back.flats.model.Flat;
-import main.islab1back.flats.model.View;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -23,10 +22,17 @@ import java.util.Map;
 @Singleton
 @Path("/functions")
 public class FunctionsController {
-    private final EntityManager em = Persistence.createEntityManagerFactory("myDb").createEntityManager();
+    private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("myDb");
+    private final EntityManager em = emf.createEntityManager();
     private final EntityTransaction transaction = em.getTransaction();
     FlatWebSocketEndpoint flatWebSocketEndpoint = new FlatWebSocketEndpoint();
 
+    @PreDestroy
+    public void close() {
+        if (emf != null && emf.isOpen()) {
+            emf.close();
+        }
+    }
 
     @Path("/view")
     @POST

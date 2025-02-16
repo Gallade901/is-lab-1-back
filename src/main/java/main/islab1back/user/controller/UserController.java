@@ -1,11 +1,9 @@
 package main.islab1back.user.controller;
 
+import jakarta.annotation.PreDestroy;
 import jakarta.ejb.Schedule;
 import jakarta.ejb.Singleton;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.Persistence;
+import jakarta.persistence.*;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.NewCookie;
@@ -25,8 +23,16 @@ import java.util.UUID;
 @Singleton
 @Path("/user")
 public class UserController {
-    private final EntityManager em = Persistence.createEntityManagerFactory("myDb").createEntityManager();
+    private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("myDb");
+    private final EntityManager em = emf.createEntityManager();
     private final EntityTransaction transaction = em.getTransaction();
+
+    @PreDestroy
+    public void close() {
+        if (emf != null && emf.isOpen()) {
+            emf.close();
+        }
+    }
 
     @Schedule(hour = "*/4", persistent = false)
     public void cleanExpiredSessions() {

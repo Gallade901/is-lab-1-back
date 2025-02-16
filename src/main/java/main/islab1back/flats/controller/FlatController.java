@@ -1,10 +1,8 @@
 package main.islab1back.flats.controller;
 
+import jakarta.annotation.PreDestroy;
 import jakarta.ejb.Singleton;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.Persistence;
+import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.websocket.Session;
 import jakarta.ws.rs.*;
@@ -28,9 +26,17 @@ import java.util.Map;
 @Singleton
 @Path("/flat")
 public class FlatController {
-    private final EntityManager em = Persistence.createEntityManagerFactory("myDb").createEntityManager();
+    private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("myDb");
+    private final EntityManager em = emf.createEntityManager();
     private final EntityTransaction transaction = em.getTransaction();
     FlatWebSocketEndpoint flatWebSocket = new FlatWebSocketEndpoint();
+
+    @PreDestroy
+    public void close() {
+        if (emf != null && emf.isOpen()) {
+            emf.close();
+        }
+    }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
